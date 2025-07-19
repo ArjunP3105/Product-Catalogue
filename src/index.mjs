@@ -1,6 +1,7 @@
 import express from "express";
 import passport from "passport";
 import mongoose from "mongoose";
+import "./stratergies/local-stratergies.mjs";
 
 const app = express();
 
