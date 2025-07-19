@@ -9,6 +9,8 @@ AuthRouter.post("/register", async (req, res) => {
     if (!newUserInfo) throw new Error("Incomplete Credentials");
     const newUser = await User.create(newUserInfo);
 
+    await newUser.save();
+
     res.status(200).send({
       message: `Created User`,
       user: newUser,

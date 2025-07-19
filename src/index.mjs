@@ -4,8 +4,20 @@ import mongoose from "mongoose";
 import "./stratergies/local-stratergies.mjs";
 import { User } from "../../expressjs/src/models/users.mjs";
 import mainRouter from "./routes/MainRouter.mjs";
+import session from "express-session";
 
 const app = express();
+
+app.use(
+  session({
+    secret: "arjun-dev",
+    saveUninitialized: false,
+    resave: false,
+    cookie: {
+      maxAge: 1000 * 60 * 60,
+    },
+  })
+);
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/product-catalogue")
