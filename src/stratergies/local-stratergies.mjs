@@ -2,13 +2,15 @@
 
 import passport from "passport";
 import { Strategy } from "passport-local";
-import { User } from "../../../expressjs/src/models/users.mjs";
+import { Users } from "../database/users.mjs";
 
 export default passport.use(
   new Strategy(async (username, password, done) => {
     try {
       if (!username || !password) throw new Error("Credentials not fullfilled");
-      const currUser = await User.findOne(username, password);
+      const currUser = await Users.findOne({
+        username,
+      });
 
       if (!currUser) throw new Error("User does not exist");
 

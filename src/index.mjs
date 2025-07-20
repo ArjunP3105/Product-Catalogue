@@ -2,7 +2,7 @@ import express from "express";
 import passport from "passport";
 import mongoose from "mongoose";
 import "./stratergies/local-stratergies.mjs";
-import { User } from "../../expressjs/src/models/users.mjs";
+import { Users } from "./database/users.mjs";
 import mainRouter from "./routes/MainRouter.mjs";
 import session from "express-session";
 
@@ -41,9 +41,9 @@ passport.serializeUser((user, done) => {
 
 //deserialising the userid and getting the user
 
-passport.deserializeUser((id, done) => {
+passport.deserializeUser(async (id, done) => {
   try {
-    const currUser = User.findById(id);
+    const currUser = await Users.findById(id);
 
     if (!currUser) throw new Error("user doesnt exist");
 
@@ -52,6 +52,7 @@ passport.deserializeUser((id, done) => {
     done(err, null);
   }
 });
+app.use(express.json());
 
 app.use("/api", mainRouter);
 
