@@ -2,21 +2,19 @@ import mongoose from "mongoose";
 
 const catalogSchema = mongoose.Schema({
   name: {
-    type: mongoose.Schema.Types.String,
+    type: String,
     required: true,
   },
   price: {
-    type: mongoose.Schema.Types.BigInt,
+    type: mongoose.Schema.Types.Decimal128,
     required: true,
   },
-  disconnect: mongoose.Schema.Types.BigInt,
-  catogory: {
-    type: mongoose.Schema.Types.String,
-    enum: ["Kitechen", "Garden", "Sports"],
+  disconnect: mongoose.Schema.Types.Decimal128,
+  category: {
+    type: String,
+    enum: ["Kitchen", "Garden", "Sports"],
     required: true,
   },
 });
 
-const Catalog = mongoose.model("Catalog", catalogSchema);
-
-export default Catalog;
+export const Catalog = mongoose.model("Catalog", catalogSchema);

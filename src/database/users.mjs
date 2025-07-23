@@ -15,3 +15,8 @@ const userSchema = mongoose.Schema({
 //then we create the model with the schema
 
 export const Users = mongoose.model("User", userSchema);
+
+/* {
+  "username":"arjun",
+  "password" :"pass123"
+} */
