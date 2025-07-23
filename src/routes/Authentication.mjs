@@ -60,9 +60,14 @@ AuthRouter.get("/status", (req, res) => {
   });
 });
 
-AuthRouter.get("/logout", (req, res) => {
-  try {
-  } catch {}
+AuthRouter.get("/logout", (req, res, next) => {
+  req.logOut((err) => {
+    if (err) return next(err);
+  });
+
+  return res.send({
+    message: "sucessfully logged out",
+  });
 });
 
 export default AuthRouter;
