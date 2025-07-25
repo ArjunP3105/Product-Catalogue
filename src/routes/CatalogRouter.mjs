@@ -13,6 +13,18 @@ const catalogRouter = express.Router();
 //get all items from catalog
 
 catalogRouter.get("/items", async (req, res) => {
+  const { category } = req.query;
+
+  if (category) {
+    const searchCatalog = await Catalog.find({ category });
+
+    if (searchCatalog.length === 0) return res.status(404);
+
+    return res.status(200).send({
+      searchCatalog,
+    });
+  }
+
   const catalog = await Catalog.find();
 
   res.status(200).send({
