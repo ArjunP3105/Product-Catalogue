@@ -56,4 +56,39 @@ catalogRouter.post(
   }
 );
 
+// deleting an item
+
+catalogRouter.get("/items/delete/:itemId", async (req, res) => {
+  const { itemId } = req.params;
+  const currUser = req.user;
+
+  console.log(currUser);
+
+  if (currUser === undefined)
+    return res.status(404).send({
+      error: "only authenticated users can delete items",
+    });
+
+  if (!itemId)
+    return res.status(404).send({
+      error: "No id provided ",
+    });
+
+  const item = await Catalog.findById(itemId);
+
+  if (!item)
+    return res.status(404).send({
+      message: "no such item exists",
+    });
+
+  await item.deleteOne();
+
+  const currItems = await Catalog.find();
+
+  res.status(200).send({
+    message: "item deleted",
+    "updated catalog": currItems,
+  });
+});
+
 export default catalogRouter;
