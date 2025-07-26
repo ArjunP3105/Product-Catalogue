@@ -5,6 +5,7 @@ import "./stratergies/local-stratergies.mjs";
 import { Users } from "./database/users.mjs";
 import mainRouter from "./routes/MainRouter.mjs";
 import session from "express-session";
+import MongoStore from "connect-mongo";
 
 const app = express();
 
@@ -13,6 +14,11 @@ app.use(
     secret: "arjun-dev",
     saveUninitialized: false,
     resave: false,
+    rolling: true,
+    store: MongoStore.create({
+      mongoUrl: "mongodb://127.0.0.1:27017/product-catalogue",
+      collectionName: "sessions",
+    }),
     cookie: {
       maxAge: 1000 * 60 * 60,
     },

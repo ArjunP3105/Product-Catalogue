@@ -7,6 +7,7 @@ import {
   matchedData,
 } from "express-validator";
 import { catalogSchema } from "../Schema/catalogSchema.mjs";
+import mongoose from "mongoose";
 
 const catalogRouter = express.Router();
 
@@ -58,12 +59,17 @@ catalogRouter.post(
 
 // deleting an item
 
-catalogRouter.get("/items/delete/:itemId", async (req, res) => {
+catalogRouter.delete("/items/delete/:itemId", async (req, res) => {
   const { itemId } = req.params;
   const currUser = req.user;
 
   console.log(currUser);
 
+  if (!mongoose.Types.ObjectId.isValid(itemId))
+    return res.status(400).send({
+      success: false,
+      message: "invalid format",
+    });
   if (currUser === undefined)
     return res.status(404).send({
       error: "only authenticated users can delete items",
@@ -86,9 +92,52 @@ catalogRouter.get("/items/delete/:itemId", async (req, res) => {
   const currItems = await Catalog.find();
 
   res.status(200).send({
+    success: true,
     message: "item deleted",
     "updated catalog": currItems,
   });
+});
+
+catalogRouter.patch("/items/update/:itemId", async (req, res) => {
+  try {
+    const currUser = req.user;
+    const updatedInfo = req.body;
+    const { itemId } = req.params;
+
+    if (!currUser) throw new Error("Not authenticated ");
+
+    if (!itemId) throw new Error("Id not provided");
+
+    if (!updatedInfo) throw new Error("No details provided");
+
+    if (!mongoose.Types.ObjectId.isValid(itemId))
+      throw new Error("Invalid id format");
+
+    const item = await Catalog.findById(itemId);
+
+    if (!item) return res.status(404);
+
+    const updatedData = await Catalog.updateOne(
+      { _id: itemId },
+      { $set: updatedInfo }
+    ); // $set this replaces the sets when updated
+
+    if (updatedData === null)
+      throw new Error("Coudnt update item , check the data sent");
+
+    const updatedItem = await Catalog.findById(itemId);
+
+    return res.status(200).send({
+      success: true,
+      updatedItem,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send({
+      success: false,
+      error: err,
+    });
+  }
 });
 
 export default catalogRouter;

@@ -10,6 +10,10 @@ const userSchema = mongoose.Schema({
     type: mongoose.Schema.Types.String,
     required: true,
   },
+  status: {
+    type: mongoose.Schema.Types.String,
+    default: "customer",
+  },
 });
 
 //then we create the model with the schema
