@@ -38,6 +38,19 @@ catalogRouter.post(
   checkSchema(catalogSchema),
   async (req, res) => {
     const result = validationResult(req);
+    const currUser = req.user;
+
+    if (!currUser)
+      return res.status(404).send({
+        success: false,
+        error: "Not Logged in",
+      });
+
+    if (currUser.status !== "admin")
+      return res.status(400).send({
+        success: false,
+        error: "admin permissions required to add items",
+      });
 
     if (!result.isEmpty)
       return res.status(400).send({
@@ -75,6 +88,12 @@ catalogRouter.delete("/items/delete/:itemId", async (req, res) => {
       error: "only authenticated users can delete items",
     });
 
+  if (currUser.status !== "admin")
+    return res.status(400).send({
+      success: false,
+      error: "admin permissions required to add items",
+    });
+
   if (!itemId)
     return res.status(404).send({
       error: "No id provided ",
@@ -105,6 +124,9 @@ catalogRouter.patch("/items/update/:itemId", async (req, res) => {
     const { itemId } = req.params;
 
     if (!currUser) throw new Error("Not authenticated ");
+
+    if (currUser.status !== "admin")
+      throw new Error("Admin permisions required to update item ");
 
     if (!itemId) throw new Error("Id not provided");
 
